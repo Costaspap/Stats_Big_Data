@@ -23,6 +23,8 @@ data$erp = ifelse(data$erp=="yes" & !is.na(data$erp), 1, 0)
 
 
 data$target = str_match(data[,1], ".5 yr survival")
-data$target = ifelse(data$target==">5 yr survival" , 1, 0)
+data$target = as.numeric(ifelse(data$target==">5 yr survival" , 1, 0))
 
 data = data[,-1]
+
+write.csv(data,'preprocessed.csv', row.names=FALSE)
