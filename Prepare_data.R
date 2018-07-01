@@ -34,3 +34,21 @@ data <- data.frame(lapply(data, function(x) {gsub(",", ".", x)}))
 data[] <- lapply(data, function(x) {
   if(factor(x)) as.numeric(as.character(x)) else x
 })
+sapply(class,data)
+
+# Lazy replacement of NAs with column mean
+
+for(i in 1:ncol(data)){
+  data[is.na(data[,i]), i] <- mean(data[,i], na.rm = TRUE)
+}
+
+#### Still working on this part
+ready_data = model.matrix(target ~ .,data)
+
+# Fit lasso
+
+
+mod = glmnet(target ~ ., data = ready_data)
+
+
+cv.glmmod <- glmnet(x =ready_data[,-24484], y=as.factor(ready_data[,24484]), alpha=1, family="binomial")
