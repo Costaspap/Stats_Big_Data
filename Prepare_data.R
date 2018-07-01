@@ -26,5 +26,11 @@ data$target = str_match(data[,1], ".5 yr survival")
 data$target = as.numeric(ifelse(data$target==">5 yr survival" , 1, 0))
 
 data = data[,-1]
+data <- data.frame(lapply(data, function(x) {gsub(",", ".", x)}))
 
-write.csv(data,'preprocessed.csv', row.names=FALSE)
+#write.csv(data,'preprocessed.csv', row.names=FALSE)
+
+
+data[] <- lapply(data, function(x) {
+  if(factor(x)) as.numeric(as.character(x)) else x
+})
