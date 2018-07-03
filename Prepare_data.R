@@ -3,13 +3,23 @@ setwd('Stats_Big_Data')
 if (!require("data.table")){
   install.packages("data.table", dependencies=TRUE)
   library("data.table")
-}else if(!require("stringr")){
+  }else{
+  library("data.table")
+  }
+
+if(!require("stringr")){
   install.packages("stringr", dependencies=TRUE)
   library("stringr")
 }else{
-  library("data.table")
   library('stringr')
 }
+
+if (!require("glmnet")){
+  install.packages("glmnet", dependencies=TRUE)
+  library("glmnet")
+  }else{
+  library("glmnet")
+  }
 
 
 data = data.frame(transpose(read.csv("alldata together.csv", header = FALSE, na.strings = 'NaN')))
@@ -47,7 +57,7 @@ for(i in 1:ncol(data)){
 na_cols = sapply(data, function(x) sum(is.na(as.numeric(as.character(x)))))
 full_na_cols = names(na_cols[na_cols == dim(data)[1]])
 
-#### Still working on this part
+# Prepare matrix
 ready_data = as.matrix(data[,!(names(data) %in% full_na_cols)])
 
 # Fit lasso
