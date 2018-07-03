@@ -42,13 +42,15 @@ for(i in 1:ncol(data)){
   data[is.na(data[,i]), i] <- mean(data[,i], na.rm = TRUE)
 }
 
+# Find full NA rows 
+
+na_cols = sapply(data, function(x) sum(is.na(as.numeric(as.character(x)))))
+full_na_cols = names(na_cols[na_cols == dim(data)[1]])
+
 #### Still working on this part
-ready_data = model.matrix(target ~ .,data)
+ready_data = as.matrix(data[,!(names(data) %in% full_na_cols)])
 
 # Fit lasso
 
-
-mod = glmnet(target ~ ., data = ready_data)
-
-
-cv.glmmod <- glmnet(x =ready_data[,-24484], y=as.factor(ready_data[,24484]), alpha=1, family="binomial")
+cv.glmmod <- glmnet(x =ready_data[,-24191], y=ready_data[,24191], 
+alpha=1, family="binomial")
