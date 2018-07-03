@@ -52,5 +52,11 @@ ready_data = as.matrix(data[,!(names(data) %in% full_na_cols)])
 
 # Fit lasso
 
-cv.glmmod <- glmnet(x =ready_data[,-24191], y=ready_data[,24191], 
+lassoResults <- cv.glmnet(x =ready_data[,-24191], y=ready_data[,24191], 
 alpha=1, family="binomial")
+
+bestlambda<-lassoResults$lambda.min #lambda.lse can also be used.
+
+results<-predict(lassoResults,s=bestlambda,type="coefficients")
+
+choicePred<-rownames(results)[which(results !=0)]
