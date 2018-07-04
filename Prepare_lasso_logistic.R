@@ -82,7 +82,7 @@ choicePred<-rownames(results)[which(results !=0)]
 
 set.seed('2018')
 
-# Split to train/test
+# Split to train/test, we should try different percentages
 intrain = sample(seq(1,dim(data)[1],1),round(3/4 * dim(data)[1]),replace = FALSE)
 
 # Use only lasso's predictors
