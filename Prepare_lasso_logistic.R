@@ -83,7 +83,7 @@ choicePred = rownames(results)[which(results !=0)]
 set.seed('2018')
 
 # Split to train/test, we should try different percentages
-intrain = sample(seq(1,dim(data)[1],1),round(3/4 * dim(data)[1]),replace = FALSE)
+intrain = sample(seq(1,dim(data)[1],1), round(3/4 * dim(data)[1]), replace = FALSE)
 
 # Use only lasso's predictors
 train = data[intrain , c(choicePred,'target')]
@@ -91,9 +91,9 @@ test_X = data[-intrain , choicePred]
 test_Y = data[-intrain , 'target']
 
 # Build Logistic model
-model = glm(target ~ .,family=binomial, data=train)
+model = glm(target ~ . ,family=binomial, data=train)
 
-predictions = ifelse(predict(model,test_X, type = 'response')>.5,1,0)
+predictions = ifelse(predict(model, test_X, type = 'response') > .5, 1, 0)
 
 # Summarize
 summary(model)
