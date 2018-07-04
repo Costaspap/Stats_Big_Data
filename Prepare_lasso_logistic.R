@@ -43,19 +43,19 @@ data$target = str_match(data[,1], ".5 yr survival")
 data$target = as.numeric(ifelse(data$target==">5 yr survival" , 1, 0))
 
 data = data[,-1]
-data <- data.frame(lapply(data, function(x) {gsub(",", ".", x)}))
+data = data.frame(lapply(data, function(x) {gsub(",", ".", x)}))
 
 #write.csv(data,'preprocessed.csv', row.names=FALSE)
 
 
-data[] <- lapply(data, function(x) {
+data[] = lapply(data, function(x) {
   if(is.factor(x)) as.numeric(as.character(x)) else x
 })
 
 # Lazy replacement of NAs with column mean
 
 for(i in 1:ncol(data)){
-  data[is.na(data[,i]), i] <- mean(data[,i], na.rm = TRUE)
+  data[is.na(data[,i]), i] = mean(data[,i], na.rm = TRUE)
 }
 
 # Find full NA rows 
@@ -69,14 +69,14 @@ data_for_lasso = as.matrix(data)
 
 # Fit lasso
 
-lassoResults <- cv.glmnet(x =data_for_lasso[,-24191], y=data_for_lasso[,24191], 
+lassoResults = cv.glmnet(x =data_for_lasso[,-24191], y=data_for_lasso[,24191], 
 alpha=1, family="binomial", intercept=FALSE)
 
-bestlambda<-lassoResults$lambda.1se
+bestlambda = lassoResults$lambda.1se
 
-results<-predict(lassoResults,s=bestlambda,type="coefficients")
+results = predict(lassoResults,s=bestlambda,type="coefficients")
 
-choicePred<-rownames(results)[which(results !=0)]
+choicePred = rownames(results)[which(results !=0)]
 
 # Logistic Regression Fitting
 
@@ -86,12 +86,12 @@ set.seed('2018')
 intrain = sample(seq(1,dim(data)[1],1),round(3/4 * dim(data)[1]),replace = FALSE)
 
 # Use only lasso's predictors
-train <- data[intrain , c(choicePred,'target')]
+train = data[intrain , c(choicePred,'target')]
 test_X = data[-intrain , choicePred]
 test_Y = data[-intrain , 'target']
 
 # Build Logistic model
-model <- glm(target ~ .,family=binomial, data=train)
+model = glm(target ~ .,family=binomial, data=train)
 
 predictions = ifelse(predict(model,test_X, type = 'response')>.5,1,0)
 
