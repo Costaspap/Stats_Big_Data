@@ -99,3 +99,106 @@ predictions = ifelse(predict(model, test_X, type = 'response') > .5, 1, 0)
 summary(model)
 
 confusionMatrix(factor(predictions),factor(test_Y))
+                 
+                 
+                 
+
+#---------------------------------------------------------------------------------
+#-------------- Logistic Regression Fitting with different samples----------------
+#---------------------------------------------------------------------------------
+
+
+for(i in 1:50){
+set.seed(i)
+
+# Split to train/test, we should try different percentages
+intrain = sample(seq(1,dim(data)[1],1), round(3/4 * dim(data)[1]), replace = FALSE)
+
+# Use only lasso's predictors
+train = data[intrain , c(choicePred,'target')]
+test_X = data[-intrain , choicePred]
+test_Y = data[-intrain , 'target']
+
+# Build Logistic model
+model = glm(target ~ . ,family=binomial, data=train)
+
+predictions = ifelse(predict(model, test_X, type = 'response') > .5, 1, 0)
+
+# Summarize
+summary(model)
+
+conf = confusionMatrix(factor(predictions),factor(test_Y))
+conf = as.matrix(conf)
+conf
+
+print(sum(diag(conf))*100/sum(conf))}
+
+
+#-------------------------------------------------------------------------
+#-------------- Handicapped randomized stepwise regression----------------
+#-------------------------------------------------------------------------
+
+
+
+best_preds = c()
+
+# Change the range depending on how many tests you want to try
+for( loop in 1:20){
+	
+	# Get only 2 starter random features from lasso's choices
+
+	fts = sample(1:length(choicePred),1)
+	#print(c('LOOP',loop ))
+	#print('')
+	
+	reached_100 = FALSE
+	for(i in 2:length(choicePred)){
+		set.seed(loop)
+		
+		# In every Loop add 1 random feature
+		possible_indexes = (1:length(choicePred))[!(1:length(choicePred)) %in% fts]
+
+		fts = c(fts,sample(possible_indexes,1))
+
+		# Split to train/test, we should try different percentages
+		intrain = sample(seq(1,dim(data)[1],1), round(3/4 * dim(data)[1]), replace = FALSE)
+
+		# Use only lasso's predictors
+		train = data[intrain , c(choicePred[fts] ,'target')]
+		test_X = data[-intrain , choicePred[fts] ]
+		test_Y = data[-intrain , 'target']
+
+
+		# Build Logistic model
+		model = glm(target ~ . ,family=binomial, data=train)
+
+		predictions = ifelse(predict(model, test_X, type = 'response') > .5, 1, 0)
+
+		# Summarize
+		#summary(model)
+
+		conf = confusionMatrix(factor(predictions),factor(test_Y))
+		conf = as.matrix(conf)
+		conf
+
+		Accuracy = as.character(sum(conf[1,1],conf[2,2])*100/sum(conf))
+
+		added_feature = tail(choicePred[fts], n=1)
+		
+		#Monitor the increase in accuracy after the new feature was added
+		#print(c(Accuracy ,added_feature))
+		
+		# Keep predictor that made accuracy reach 100
+		if((Accuracy == 100) & (reached_100 == FALSE)){
+			best_preds = c(best_preds,added_feature)
+			reached_100 = TRUE
+
+			}
+
+											} 
+												}
+
+
+
+table(best_preds[order(as.numeric(table(best_preds)))])
+    
