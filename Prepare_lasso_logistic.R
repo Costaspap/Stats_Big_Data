@@ -199,6 +199,6 @@ for( loop in 1:20){
 												}
 
 
-
+# Check how many times did each predictor help the model reach 100 accuracy
 table(best_preds[order(as.numeric(table(best_preds)))])
     
