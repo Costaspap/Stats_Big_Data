@@ -244,3 +244,20 @@ importance <- varImp(model, scale=FALSE)
 print(importance)
 # plot importance
 plot(importance)
+
+#-------------------------------------------------------------------------
+#-------------- feature importance check no 2 ----------------
+#-------------------------------------------------------------------------
+
+control <- rfeControl(functions=rfFuncs, method="cv", number=10)
+# run the RFE algorithm
+#?rfe
+colnames(tmp)
+
+results <- rfe(tmp[,1:39],tmp[,40], sizes=c(1:39), rfeControl=control)
+# summarize the results
+print(results)
+# list the chosen features
+predictors(results)
+# plot the results
+plot(results, type=c("g", "o"))
