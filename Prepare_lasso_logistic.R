@@ -202,3 +202,45 @@ for( loop in 1:20){
 # Check how many times did each predictor help the model reach 100 accuracy
 table(best_preds[order(as.numeric(table(best_preds)))])
     
+#-------------------------------------------------------------------------
+#-------------- feature importance check no 1 ----------------
+#-------------------------------------------------------------------------
+
+#bckp_data_for_lasso <- data_for_lasso
+data_for_lasso <- bckp_data_for_lasso
+data_for_lasso[1:3,1:3]
+
+# Fit lasso
+lassoResults = cv.glmnet(x =data_for_lasso[,-24191], y=data_for_lasso[,24191], 
+                         alpha=1, family="binomial", intercept=FALSE)
+#bestlambda = lassoResults$lambda.1se
+bestlambda = lassoResults$lambda.min
+bestlambda
+results = predict(lassoResults,s=bestlambda,type="coefficients")
+results
+choicePred = rownames(results)[which(results !=0)]
+choicePred
+
+# Logistic Regression Fitting
+set.seed('2018')
+
+tmp<-as.data.frame(data_for_lasso)
+tmp<-tmp[,c(choicePred,'target')]
+tmp$target <- as.factor(tmp$target)
+tmp[1:3,1:3]
+# load the library
+library(mlbench)
+library(caret)
+# prepare training scheme
+control <- trainControl(method="repeatedcv", number=10, repeats=3)
+#?trainControl
+# train the model
+tmp
+model <- train(target~., data=tmp, method="glm", preProcess=c("center", "scale"), trControl=control)
+?train
+# estimate variable importance
+importance <- varImp(model, scale=FALSE)
+# summarize importance
+print(importance)
+# plot importance
+plot(importance)
