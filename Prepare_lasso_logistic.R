@@ -263,7 +263,7 @@ plot(results, type=c("g", "o"))
 
 #-------------------------------------------------------------------------
 #-------------- feature importance check no 3 , ----------------
-#-------------- checking on prediction of high class, while removing atts ----------------
+#-------------- checking on precision of high class, while removing atts ----------------
 #-------------------------------------------------------------------------
 # Build Logistic model
 library(boot)
@@ -412,7 +412,7 @@ for( name in colnames(tmp)[-n] ){
 
 #-------------------------------------------------------------------------
 #-------------- feature importance check no 4 , ----------------
-#-------------- checking on prediction of high class, while adding atts----------------
+#-------------- checking on precision of high class, while adding atts----------------
 #-------------------------------------------------------------------------
 
 dim(tmp)
