@@ -40,7 +40,7 @@ data$erp = ifelse(data$erp=="yes" & !is.na(data$erp), 1, 0)
 
 # Build target variable
 data$target = str_match(data[,1], ".5 yr survival")
-data$target = as.numeric(ifelse(data$target==">5 yr survival" , 1, 0))
+data$target = as.numeric(ifelse(data$target==">5 yr survival" , 0, 1))
 
 data = data[,-1]
 data = data.frame(lapply(data, function(x) {gsub(",", ".", x)}))
