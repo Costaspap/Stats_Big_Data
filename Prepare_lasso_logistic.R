@@ -1,5 +1,3 @@
-setwd('Stats_Big_Data')
-
 if (!require("data.table")){
   install.packages("data.table", dependencies=TRUE)
 }
