@@ -1,31 +1,10 @@
-setwd('Stats_Big_Data')
 
-if (!require("data.table")){
-  install.packages("data.table", dependencies=TRUE)
-  library("data.table")
-}else{
-  library("data.table")
-}
-
-if(!require("stringr")){
-  install.packages("stringr", dependencies=TRUE)
-  library("stringr")
-}else{
-  library('stringr')
-}
-
-if (!require("glmnet")){
-  install.packages("glmnet", dependencies=TRUE)
-  library("glmnet")
-}else{
-  library("glmnet")
-}
-
-if (!require("caret")){
-  install.packages("caret", dependencies=TRUE)
-  library("caret")
-}else{
-  library("caret")
+# Check if packages are already installed and then load them.
+for (package in c("data.table","stringr","glmnet","caret","mlbench","RANN")){
+  if (!require(package, character.only=TRUE)){
+    install.packages(package, character.only=TRUE, dependencies=TRUE)
+  }
+  library(package, character.only=TRUE)
 }
 
 data = data.frame(transpose(read.csv("alldata together.csv", header = FALSE, na.strings = 'NaN')))
@@ -128,9 +107,7 @@ tmp<-as.data.frame(lasso_data)
 tmp<-tmp[,c(choicePred,'target')]
 tmp$target <- as.factor(tmp$target)
 tmp[1:3,1:3]
-# load the library
-library(mlbench)
-library(caret)
+
 # prepare training scheme
 control <- trainControl(method="repeatedcv", number=10, repeats=3)
 #?trainControl
