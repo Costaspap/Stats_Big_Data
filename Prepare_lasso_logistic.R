@@ -1,3 +1,6 @@
+#myDir <- "/home/datum/msc_active_repos/stats_big_data"
+#setwd(myDir)
+#setwd('Stats_Big_Data')
 
 # Check if packages are already installed and then load them.
 for (package in c("data.table","stringr","glmnet","caret","mlbench","RANN")){
@@ -82,42 +85,24 @@ confusionMatrix(factor(predictions),factor(test_Y))
 
 
 #-------------------------------------------------------------------------
-#-------------- feature importance check no 1 ----------------
+#-------------- feature importance RFE ----------------
 #-------------------------------------------------------------------------
-
-#bckp_data_for_lasso <- data_for_lasso
-lasso_data <- bckp_data_for_lasso
-lasso_data[1:3,1:3]
-
-# Fit lasso
-lassoResults = cv.glmnet(x =lasso_data[,-24191], y=lasso_data[,24191], 
-                         alpha=1, family="binomial", intercept=FALSE)
-#bestlambda = lassoResults$lambda.1se
-bestlambda = lassoResults$lambda.min
-bestlambda
-results = predict(lassoResults,s=bestlambda,type="coefficients")
-
-choicePred = rownames(results)[which(results !=0)]
-
-
-# Logistic Regression Fitting
-set.seed('2018')
 
 tmp<-as.data.frame(lasso_data)
 tmp<-tmp[,c(choicePred,'target')]
-tmp$target <- as.factor(tmp$target)
-tmp[1:3,1:3]
+n<-dim(tmp)[2]
+n
 
-# prepare training scheme
-control <- trainControl(method="repeatedcv", number=10, repeats=3)
-#?trainControl
-# train the model
-tmp
-model <- train(target~., data=tmp, method="glm", preProcess=c("center", "scale"), trControl=control)
-?train
-# estimate variable importance
-importance <- varImp(model, scale=FALSE)
-# summarize importance
-print(importance)
-# plot importance
-plot(importance)
+tmp[1:3,1:3]
+control <- rfeControl(functions=rfFuncs, method="cv", number=10)
+# run the RFE algorithm
+#?rfe
+colnames(tmp)
+
+results <- rfe(tmp[,1:n-1],tmp[,n], sizes=c(1:n-1), rfeControl=control)
+# summarize the results
+print(results)
+# list the chosen features
+predictors(results)
+# plot the results
+plot(results, type=c("g", "o"))
