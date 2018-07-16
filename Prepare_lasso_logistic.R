@@ -14,10 +14,15 @@ if (!require("caret")){
   install.packages("caret", dependencies=TRUE)
 }
 
+if (!require("mlbench")){
+  install.packages("mlbench", dependencies=TRUE)
+}
+
 library("data.table")
 library("stringr")
 library("glmnet")
 library("caret")
+library("mlbench")
 
 data = data.frame(transpose(read.csv("alldata together.csv", header = FALSE, na.strings = 'NaN')))
 colnames(data) = trimws(data[1, ],which = 'right')
@@ -119,9 +124,7 @@ tmp<-as.data.frame(lasso_data)
 tmp<-tmp[,c(choicePred,'target')]
 tmp$target <- as.factor(tmp$target)
 tmp[1:3,1:3]
-# load the library
-library(mlbench)
-library(caret)
+
 # prepare training scheme
 control <- trainControl(method="repeatedcv", number=10, repeats=3)
 #?trainControl
