@@ -2,31 +2,24 @@ setwd('Stats_Big_Data')
 
 if (!require("data.table")){
   install.packages("data.table", dependencies=TRUE)
-  library("data.table")
-}else{
-  library("data.table")
 }
 
 if(!require("stringr")){
   install.packages("stringr", dependencies=TRUE)
-  library("stringr")
-}else{
-  library('stringr')
 }
 
 if (!require("glmnet")){
   install.packages("glmnet", dependencies=TRUE)
-  library("glmnet")
-}else{
-  library("glmnet")
 }
 
 if (!require("caret")){
   install.packages("caret", dependencies=TRUE)
-  library("caret")
-}else{
-  library("caret")
 }
+
+library("data.table")
+library("stringr")
+library("glmnet")
+library("caret")
 
 data = data.frame(transpose(read.csv("alldata together.csv", header = FALSE, na.strings = 'NaN')))
 colnames(data) = trimws(data[1, ],which = 'right')
