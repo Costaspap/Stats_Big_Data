@@ -1,28 +1,11 @@
-if (!require("data.table")){
-  install.packages("data.table", dependencies=TRUE)
-}
 
-if(!require("stringr")){
-  install.packages("stringr", dependencies=TRUE)
+# Check if packages are already installed and then load them.
+for (package in c("data.table","stringr","glmnet","caret","mlbench","RANN")){
+  if (!require(package, character.only=TRUE)){
+    install.packages(package, character.only=TRUE, dependencies=TRUE)
+  }
+  library(package, character.only=TRUE)
 }
-
-if (!require("glmnet")){
-  install.packages("glmnet", dependencies=TRUE)
-}
-
-if (!require("caret")){
-  install.packages("caret", dependencies=TRUE)
-}
-
-if (!require("mlbench")){
-  install.packages("mlbench", dependencies=TRUE)
-}
-
-library("data.table")
-library("stringr")
-library("glmnet")
-library("caret")
-library("mlbench")
 
 data = data.frame(transpose(read.csv("alldata together.csv", header = FALSE, na.strings = 'NaN')))
 colnames(data) = trimws(data[1, ],which = 'right')
